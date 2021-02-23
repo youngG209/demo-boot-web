@@ -22,19 +22,43 @@ public class SampleControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    PersonRepository personRepository;
+
+    /**
+     * Formatter 사용
+     */
     @Test
     public void hello() throws Exception {
         this.mockMvc.perform(get("/hello/lee"))
                 .andDo(print())
-                .andExpect(content().string("hello lee"));
+                .andExpect(content().string("hello1 lee"));
     }
 
+    /**
+     * Formatter 사용
+     */
     @Test
     public void hello2() throws Exception {
         this.mockMvc.perform(get("/hello2")
                                 .param("name","lee"))
                 .andDo(print())
-                .andExpect(content().string("hello lee"));
+                .andExpect(content().string("hello2 lee"));
     }
 
+    /**
+     * jpa 사용
+     */
+
+    @Test
+    public void hello3() throws Exception {
+        Person person = new Person();
+        person.setName("lee");
+        Person savePerson = personRepository.save(person);
+
+        this.mockMvc.perform(get("/hello3")
+                .param("id", savePerson.getId().toString()))
+                .andDo(print())
+                .andExpect(content().string("hello3 lee"));
+    }
 }

@@ -10,11 +10,16 @@ public class SampleController {
 
     @GetMapping("/hello/{name}")
     public String hello(@PathVariable("name") Person person) {
-        return "hello " + person.getName();
+        return "hello1 " + person.getName();
     }
 
     @GetMapping("/hello2")
     public String hello2(@RequestParam("name") Person person) {
-        return "hello " + person.getName();
+        return "hello2 " + person.getName();
+    }
+
+    @GetMapping("/hello3")
+    public String hello3(@RequestParam("id") Person person) {
+        return "hello3 " + person.getName();
     }
 }
