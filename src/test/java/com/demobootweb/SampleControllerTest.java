@@ -9,14 +9,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.oxm.Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -31,6 +35,9 @@ public class SampleControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    Marshaller marshaller;
 
     /**
      * Formatter 사용
@@ -110,6 +117,31 @@ public class SampleControllerTest {
                             .content(jsonString))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(2019))
+                .andExpect(jsonPath("$.name").value("Lee"))
+        ;
+    }
+
+    @Test
+    public void xmlMessage() throws Exception {
+
+        Person person = new Person();
+        person.setId(2019l);
+        person.setName("Lee");
+
+        StringWriter stringWriter = new StringWriter();
+        Result result = new StreamResult(stringWriter);
+        marshaller.marshal(person, result);
+        String xmlString = stringWriter.toString();
+
+        this.mockMvc.perform(get("/jsonMessage")
+                .contentType(MediaType.APPLICATION_XML)
+                .accept(MediaType.APPLICATION_XML)
+                .content(xmlString))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(xpath("person/name").string("Lee"))
+                .andExpect(xpath("person/id").string("2019"))
         ;
     }
 }
