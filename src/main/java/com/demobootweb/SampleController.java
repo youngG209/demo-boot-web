@@ -25,4 +25,9 @@ public class SampleController {
     public String message(@RequestBody String person){
         return person;
     }
+
+    @GetMapping("/jsonMessage")
+    public Person jsonMessage(@RequestBody Person person){
+        return person;
+    }
 }
