@@ -1,9 +1,6 @@
 package com.demobootweb;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class SampleController {
@@ -21,5 +18,11 @@ public class SampleController {
     @GetMapping("/hello3")
     public String hello3(@RequestParam("id") Person person) {
         return "hello3 " + person.getName();
+    }
+
+    @GetMapping("/message")
+//    @ResponseBody // @RestController일 때 당연히 생략(필요X)
+    public String message(@RequestBody String person){
+        return person;
     }
 }
